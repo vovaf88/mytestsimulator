@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Вопрос {{ question.q_number }}
+{% endblock %}
+
+{% block content %}
+<div class="container-xl">
+
+    <h2 class="bg-success p-2 text-white">Вопрос {{ question.q_number }}</h2>
+    <h4 class="bg-success p-2" style="--bs-bg-opacity: .5;">{{ question.text }}</h4>
+    {% for answer in question.get_answers %}
+    <div class="form-check p-3 mb-2 bg-warning-subtle text-emphasis-warning">
+      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+      <label class="form-check-label" for="flexRadioDefault1">
+        {{ answer.a_number }}. {{ answer.text }}
+      </label>
+    </div>
+
+    {% endfor %}
+    <hr>
+    {% if question.id > 1 %}
+    <a href="{% url 'my_q_det' question.id|add:-1 %}" class="btn btn-warning">Предыдущий</a>
+    {% endif %}
+    {% if question.id < question.get_count_questions %}
+    <a href="{% url 'my_q_det' question.id|add:1 %}" class="btn btn-warning">Следующий</a>
+    {% endif %}
+
+        <script type="text/javascript">
+            function showHide(element_id) {
+                if (document.getElementById(element_id)) {
+                    var obj = document.getElementById(element_id);
+                    if (obj.style.display != "block") {
+                        obj.style.display = "block";
+                    }
+                    else obj.style.display = "none";
+                }
+                else alert("Элемент с id: " + element_id + " не найден!");
+            }
+        </script>
+        <hr>
+        <a href="javascript:void(0)" onclick="showHide('block_id')" class="btn btn-info">Скрыть/Показать правильный ответ</a><br/><br/>
+        <div id="block_id" style="display: none;">
+            <p>
+                {% for r_answer in question.get_right_answer %}
+                    right:
+
+                    <p>
+                        {{ r_answer.a_number }}. {{ r_answer.text }}
+                    </p>
+                {% endfor %}
+            </p>
+        </div>
+        <a href="javascript:void(0)" onclick="showHide('block_ff') " class="btn btn-success">Показать подсказку</a><br/><br/>
+        <div id="block_ff" style="display: none;">
+            {% if question.help_link == "-" %}
+            <p>НЕТ ССЫЛОК</p>
+            {% else %}
+            <p><a href="{{ question.help_link }}" target="_blank">Ссылка</a></p>
+            {% endif %}
+            <p>{{ question.comment }}</p>
+        </div>
+
+        <div>
+            <a href="/" class="btn btn-secondary">Главная</a>
+        </div>
+        <hr>
+        <div>
+                {% for q in question.all_questions %}
+                    <a href="{{ q.q_number }}" class="btn btn-light">{{ q.q_number }}</a>
+                {% endfor %}
+        </div>
+
+</div>
+
+
+{% endblock %}
