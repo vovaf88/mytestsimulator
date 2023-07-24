@@ -1,0 +1,12 @@
+version: '3.7'
+
+services:
+  linkedtest:
+    build: .
+    command: python /usr/src/dm_rest/manage.py runserver 0.0.0.0:8001
+    volumes:
+      - .:/usr/src/dm_rest
+    ports:
+      - 8001:8001
+
+
